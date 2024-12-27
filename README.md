@@ -1,3 +1,3 @@
 # FSD-lab
 my name is praneeth
-good evening
+this is a repository created for working on it in fsd lab.
