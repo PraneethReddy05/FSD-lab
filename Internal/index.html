@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <title>Tasks Tracker</title>
+</head>
+
+<body>
+    <div>
+        <form class="registerform">
+            <div class="col-5 d-flex flex-column gap-2 justify-content-center align-items-center">
+                <label for="username">Username</label>
+                <input class="form-control" type="text" id="rusername" placeholder="Username" required>
+                <label for="username">Email</label>
+                <input class="form-control" type="text" id="remail" placeholder="Email" required>
+                <label for="username">Password</label>
+                <input class="form-control" type="password" id="rpassword" placeholder="password" required>
+                <button id="registerbtn" type="submit" class="btn btn-success">Register</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        <form class="loginform">
+            <div class="col-5 d-flex flex-column gap-2 justify-content-center align-items-center">
+                <label for="username">Email</label>
+                <input class="form-control" type="text" id="lemail" placeholder="Email" required>
+                <label for="username">Password</label>
+                <input class="form-control" type="password" id="lpassword" placeholder="password" required>
+                <button id="loginbtn" type="submit" class="btn btn-success">login</button>
+            </div>
+        </form>
+    </div>
+    <div class="taskUI" style="display: none;">
+        <div class="d-flex flex-column justify-content-center">
+            <h2>Welcome user</h2>
+            <button id="logout" class="btn btn-danger" style="width: 5rem;">Logout</button>
+            <div class="col-7">
+                <form class="newtaskform">
+                    <input type="text" class="form-control" id="ttitle" placeholder="Title" required>
+                    <textarea id="tdescription" class="form-control" placeholder="description"></textarea>
+                    <input type="date" class="form-control" id="tdate">
+                    <select id="tstatus" class="form-control">
+                        <option value="pending">pending</option>
+                        <option value="in-progress">in-progress</option>
+                        <option value="completed">completed</option>
+                    </select>
+                    <button id="newtaskbtn" class="btn btn-success">add task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        let authToken = "";
+        document.querySelector(".registerform").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            let username = rusername.value;
+            let email = remail.value;
+            let password = rpassword.value;
+            console.log(`${username} ${email} ${password}`)
+            const res = await fetch("/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password })
+            })
+            const data = await res.json()
+            alert(data.message || "Registered!")
+        })
+
+        document.querySelector(".loginform").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            let email = lemail.value
+            let password = lpassword.value
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            })
+            let data = await res.json()
+            if (data.token) {
+                authToken = data.token;
+                document.querySelector(".taskUI").style.display = "block";
+            }
+            alert(data.message || "user Logged in successfully!")
+        })
+
+        document.querySelector(".newtaskform").addEventListener("submit",async(event)=>{
+            event.preventDefault();
+            let title = ttitle.value;
+            let description = tdescription.value;
+            let date = tdate.value;
+            let status = tstatus.value;
+            const res = await fetch("/tasks")
+        })
+    </script>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+    crossorigin="anonymous"></script>
+
+</html>
